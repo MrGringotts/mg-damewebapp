@@ -4,13 +4,13 @@ $showAlert = false;
 $showError = false;
 $exists = false;
 
-
+// If the user will click the Sign-up button, the following sequence will be executed
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // Include file which makes the
-    // Database Connection.
+    // Include file which makes the Database Connection.
+    
     include 'db/config.php';
-
+    
     $username = $_POST["username"];
     $email = $_POST["email"];
     $password = $_POST["password"];
@@ -23,33 +23,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $num = mysqli_num_rows($result);
 
-    // This sql query is use to check if
-    // the username is already present 
-    // or not in our Database
+    // Username and password checking
+    // If the username is available it will execute the password checking
     if ($num == 0) {
+        // If the input password matches the confirm password, it will be saved into the database and will be converted into the hash
         if (($password == $cpassword) && $exists == false) {
 
             $hash = md5($password);
 
-            // Password Hashing is used here. 
+            // Password Hashing is used here.
+            // The following SQL query will insert the values into the MySQL database
+            
             $sql = "INSERT INTO `users` ( `username`, `email`,
                 `password`) VALUES ('$username', '$email',
                 '$hash')";
-
+            
+            // This will validate the database connection to see if it works, then it will check if the SQL execution is success
             $result = mysqli_query($conn, $sql);
-
+            
+            // If the database storing is executed successfully,  the $showAlert from line 80 will be executed (a pop-up notification)                                              
             if ($result) {
                 $showAlert = true;
             }
+            // This will be executed if the password and confirm password does not match                                               
         } else {
             $showError = "Passwords do not match";
         }
-    } // end if 
+    } // end if (Password checking)
 
+    // This 
+
+    // This will be executed if the username is already taken
     if ($num > 0) {
         $exists = "Username not available";
     }
-} //end if   
+} //end if (Username checkick)
 
 ?>
 
